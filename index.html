@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>เพ้นท์</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Baloo+2&display=swap');
+
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    body {
+      background: linear-gradient(-45deg, #ffafbd, #ffc3a0, #b5ead7, #a0e7e5);
+      background-size: 400% 400%;
+      animation: gradientShift 20s ease infinite;
+      font-family: 'Baloo 2', cursive, Arial, sans-serif;
+      text-align: center;
+      padding: 40px 20px 80px 20px;
+      color: #d81e5b;
+      overflow-x: hidden;
+      position: relative;
+      min-height: 100vh;
+      transition: filter 0.5s ease;
+      user-select: none;
+    }
+
+    h1 {
+      font-size: 3.8em;
+      margin-bottom: 15px;
+      text-shadow: 0 0 10px #d81e5baa;
+      position: relative;
+      z-index: 10;
+    }
+
+    .message {
+      font-size: 1.4em;
+      margin-bottom: 40px;
+      line-height: 1.6;
+      max-width: 460px;
+      margin-left: auto;
+      margin-right: auto;
+      color: #9c1943;
+      position: relative;
+      z-index: 10;
+      transition: filter 0.5s ease;
+    }
+
+    .blur { filter: blur(5px); user-select: none; }
+
+    #giftBox {
+      margin: 0 auto;
+      width: 180px;
+      height: 180px;
+      background: #fff0f6;
+      border: 6px solid #d81e5b;
+      border-radius: 30px;
+      cursor: pointer;
+      position: relative;
+      box-shadow: 0 10px 25px #d81e5b66;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 7em;
+      color: #d81e5b;
+      user-select: none;
+      transition: transform 0.3s ease, filter 0.4s ease;
+      perspective: 600px;
+      transform-style: preserve-3d;
+      z-index: 15;
+    }
+    #giftBox:hover { transform: scale(1.1); }
+
+    @keyframes shake {
+      0%, 100% { transform: rotate(0deg); }
+      25% { transform: rotate(10deg); }
+      50% { transform: rotate(-10deg); }
+      75% { transform: rotate(10deg); }
+    }
+
+    @keyframes openBox {
+      0% { transform: rotateX(0deg); box-shadow: 0 10px 25px #d81e5b66; }
+      50% { transform: rotateX(-90deg); box-shadow: 0 14px 30px #d81e5b99; }
+      100% { transform: rotateX(0deg); box-shadow: 0 20px 45px #d81e5bcc; }
+    }
+
+    .result {
+      position: absolute;
+      width: 220px;
+      z-index: 20;
+      pointer-events: auto;
+      user-select: none;
+      background: #fff6f9cc;
+      border-radius: 25px;
+      box-shadow: 0 0 25px #d81e5bcc;
+      padding: 12px 10px 16px 10px;
+      transition: opacity 0.4s ease;
+      transform: translateX(-50%);
+    }
+    .result.hidden { opacity: 0; pointer-events: none; }
+
+    .result img {
+      width: 220px;
+      max-width: 90vw;
+      border-radius: 25px;
+      box-shadow: 0 0 25px #d81e5bcc;
+      opacity: 0;
+      animation: fadeIn 1.2s ease forwards;
+      display: block;
+      margin: 0 auto;
+      user-select: none;
+    }
+
+    .caption {
+      margin-top: 12px;
+      font-size: 1.2em;
+      color: #b33157;
+      font-weight: 600;
+      opacity: 0;
+      animation: fadeInCaption 1.5s forwards;
+      max-width: 260px;
+      margin-left: auto;
+      margin-right: auto;
+      user-select: none;
+    }
+
+    .close-btn {
+      margin-top: 12px;
+      padding: 8px 20px;
+      background-color: #d81e5b;
+      border: none;
+      color: white;
+      font-size: 1.1em;
+      font-weight: 600;
+      border-radius: 20px;
+      cursor: pointer;
+      user-select: none;
+      box-shadow: 0 4px 10px #d81e5b99;
+      transition: background-color 0.3s ease;
+    }
+    .close-btn:hover { background-color: #b33157; }
+
+    @keyframes fadeIn { to { opacity: 1; } }
+    @keyframes fadeInCaption { to { opacity: 1; } }
+
+    .floating-heart {
+      position: fixed;
+      font-size: 28px;
+      color: #d81e5b;
+      animation-name: floatUp;
+      animation-timing-function: ease-out;
+      animation-fill-mode: forwards;
+      pointer-events: none;
+      user-select: none;
+      filter: drop-shadow(0 0 3px #d81e5b88);
+      opacity: 0.9;
+      will-change: transform, opacity;
+      z-index: 50;
+    }
+    @keyframes floatUp {
+      0% { transform: translateY(0) scale(1); opacity: 0.9; }
+      100% { transform: translateY(-150px) scale(1.6); opacity: 0; }
+    }
+
+    #fireworksCanvas {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 60;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>เพ้นท์</h1>
+  <div class="message" id="message">
+    แด่เธอที่รักที่สุดในใจ<br />
+    ขอบคุณที่อยู่เคียงข้างกันเสมอ<br />
+    รักเธอที่สุดในโลกเลยนะ 💕
+  </div>
+
+  <div id="giftBox" title="กดเพื่อเปิดกล่องของขวัญ">🎁</div>
+
+  <div class="result hidden" id="result"></div>
+
+  <canvas id="fireworksCanvas"></canvas>
+
+  <script>
+    const fanImages = [
+      {
+        src: 'https://media.discordapp.net/attachments/1346464321332449301/1430914443470049352/IMG_20250917_202543_257.jpg',
+        caption:'แฟนเค้าน่ารักที่สุดเรยย'
+      },
+      {
+        src: 'https://media.discordapp.net/attachments/1346464321332449301/1430914442182262834/IMG_20250921_152913_053.jpg',
+        caption: 'สวยเกิ๊นนนนนนน'
+      },
+      {
+        src: 'https://cdn.discordapp.com/attachments/1346464321332449301/1430914443251814500/IMG_20250918_195204_286.jpg',
+        caption: 'น่ารักมากมากกกกกกกกกก'
+      }
+    ];
+
+    const giftBox = document.getElementById('giftBox');
+    const result = document.getElementById('result');
+    const message = document.getElementById('message');
+    const fireworksCanvas = document.getElementById('fireworksCanvas');
+    const ctx = fireworksCanvas.getContext('2d');
+
+    function resizeCanvas() {
+      fireworksCanvas.width = window.innerWidth;
+      fireworksCanvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    function createFloatingHeart() {
+      const heart = document.createElement('div');
+      heart.classList.add('floating-heart');
+      heart.textContent = '❤️';
+      heart.style.left = (Math.random() * window.innerWidth) + 'px';
+      const duration = 1400 + Math.random() * 1800;
+      heart.style.animationDuration = duration + 'ms';
+      document.body.appendChild(heart);
+      heart.addEventListener('animationend', () => heart.remove());
+    }
+    setInterval(createFloatingHeart, 300);
+
+    function animateGiftBox() {
+      return new Promise(resolve => {
+        giftBox.style.animation = 'shake 1.2s ease';
+        setTimeout(() => {
+          giftBox.style.animation = 'openBox 0.8s ease forwards';
+          setTimeout(() => resolve(), 800);
+        }, 1200);
+      });
+    }
+
+    class Firework {
+      constructor() {
+        this.x = Math.random() * fireworksCanvas.width;
+        this.y = fireworksCanvas.height;
+        this.targetY = Math.random() * fireworksCanvas.height / 2;
+        this.particles = [];
+        this.isExploded = false;
+        this.color = `hsl(${Math.floor(Math.random() * 360)}, 100%, 70%)`;
+      }
+      update() {
+        if (!this.isExploded) {
+          this.y -= 8;
+          if (this.y <= this.targetY) {
+            this.explode();
+            this.isExploded = true;
+          }
+        }
+        this.particles.forEach(p => {
+          p.vx *= 0.95;
+          p.vy *= 0.95;
+          p.vy += 0.2;
+          p.x += p.vx;
+          p.y += p.vy;
+          p.alpha -= 0.03;
+        });
+        this.particles = this.particles.filter(p => p.alpha > 0);
+      }
+      explode() {
+        for (let i = 0; i < 60; i++) {
+          const angle = Math.random() * Math.PI * 2;
+          const speed = Math.random() * 5 + 2;
+          this.particles.push({ 
+            x: this.x, 
+            y: this.y, 
+            vx: Math.cos(angle) * speed, 
+            vy: Math.sin(angle) * speed, 
+            alpha: 1 
+          });
+        }
+      }
+      draw() {
+        ctx.fillStyle = this.color;
+        this.particles.forEach(p => {
+          ctx.globalAlpha = p.alpha;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, 3, 0, Math.PI * 2);
+          ctx.fill();
+        });
+        ctx.globalAlpha = 1;
+      }
+    }
+
+    const fireworks = [];
+    function launchFirework() {
+      fireworks.push(new Firework());
+    }
+
+    function animateFireworks() {
+      ctx.clearRect(0, 0, fireworksCanvas.width, fireworksCanvas.height);
+      fireworks.forEach(fw => { fw.update(); fw.draw(); });
+      requestAnimationFrame(animateFireworks);
+    }
+    animateFireworks();
+
+    giftBox.addEventListener('click', async () => {
+      giftBox.style.pointerEvents = 'none';
+      message.classList.add('blur');
+      await animateGiftBox();
+
+      const selected = fanImages[Math.floor(Math.random() * fanImages.length)];
+
+      result.innerHTML = `
+        <img src="${selected.src}" alt="Gift Image">
+        <div class="caption">${selected.caption}</div>
+        <button class="close-btn" onclick="closeResult()">ปิด</button>
+      `;
+      
+      const rect = giftBox.getBoundingClientRect();
+      const top = window.scrollY + rect.top + rect.height * 0.1;
+      const left = rect.left + rect.width / 2;
+      result.style.top = top + 'px';
+      result.style.left = left + 'px';
+      result.classList.remove('hidden');
+
+      fireworksCanvas.style.display = 'block';
+      const fireInterval = setInterval(launchFirework, 300);
+      setTimeout(() => { clearInterval(fireInterval); fireworksCanvas.style.display = 'none'; }, 4000);
+    });
+
+    function closeResult() {
+      result.classList.add('hidden');
+      message.classList.remove('blur');
+      giftBox.style.pointerEvents = 'auto';
+      giftBox.style.animation = '';
+    }
+  </script>
+</body>
+</html>
